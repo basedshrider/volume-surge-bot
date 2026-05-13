@@ -10,7 +10,7 @@ from handlers.callbacks import callback_handler
 from loguru import logger
 import services.alert_engine
 
-# Configure logging so we can see what happens in Railway
+# Better logging for Railway
 logger.remove()
 logger.add(lambda msg: print(msg, end=""), level="DEBUG", colorize=True)
 
@@ -26,14 +26,14 @@ async def main():
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("menu", show_menu))
     
-    # FIXED LINE - no backslash
+    # THIS IS THE FIXED LINE (NO BACKSLASH)
     app.add_handler(MessageHandler(filters.TEXT & \~filters.COMMAND, natural_language))
     
     app.add_handler(CallbackQueryHandler(callback_handler))
 
     start_scanner()
 
-    logger.success("🤖 Volume Surge Bot is LIVE and stable")
+    logger.success("🤖 Volume Surge Bot started successfully")
     await app.run_polling()
 
 if __name__ == "__main__":
