@@ -65,7 +65,7 @@ async def process_pair(user, pair: dict, db, settings: dict):
     if last and datetime.utcnow() - last.timestamp < timedelta(minutes=settings.get("cooldown_minutes", 30)):
         return
 
-    await send_alert(user.user_id, pair, ratio, settings.get("volume_timeframe", "5m"), bot=app.bot)
+await send_alert(user.user_id, pair, ratio, settings.get("volume_timeframe", "5m"))
     db.add(AlertHistory(
         user_id=user.user_id,
         token_address=pair["baseToken"]["address"],
