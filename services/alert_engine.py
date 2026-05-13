@@ -3,9 +3,13 @@ from loguru import logger
 import html
 from utils.constants import CHAIN_MAP, VOLUME_KEYS
 
-async def send_alert(user_id: int, pair: dict, ratio: float, timeframe: str, bot=None):
-    if not bot:
-        return  # fallback safety
+# Global bot instance (set from bot.py)
+bot = None
+
+async def send_alert(user_id: int, pair: dict, ratio: float, timeframe: str):
+    if bot is None:
+        logger.error("Bot instance not set for alerts")
+        return
 
     token = pair.get("baseToken", {})
     mcap = pair.get("marketCap") or pair.get("fdv") or 0
@@ -33,6 +37,12 @@ Ratio: <b>{ratio:.1f}%</b>
     ])
 
     try:
-        await bot.send_message(chat_id=user_id, text=text, parse_mode="HTML", reply_markup=keyboard)
+        await bot.send_message(
+            chat_id=user_id,
+            text=text,
+            parse_mode="HTML",
+            reply_markup=keyboard
+        )
+        logger.success(f"✅ Alert sent to {user_id} for {token.get('symbol')}")
     except Exception as e:
-        logger.error(f"Alert failed for {user_id}: {e}")
+        logger.error(f"❌ Failed to send alert to {user_id}: {e}")
