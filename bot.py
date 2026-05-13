@@ -8,12 +8,16 @@ from handlers.start import start
 from handlers.commands import show_menu, natural_language
 from handlers.callbacks import callback_handler
 from loguru import logger
+import services.alert_engine   # ← NEW
 
 async def main():
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
 
     app = Application.builder().token(config.TELEGRAM_BOT_TOKEN).build()
+
+    # Make bot available to background scanner
+    services.alert_engine.bot = app.bot   # ← NEW (this fixes alerts)
 
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("menu", show_menu))
@@ -22,7 +26,7 @@ async def main():
 
     start_scanner()
 
-    logger.success("🤖 Volume Surge Bot is LIVE")
+    logger.success("🤖 Volume Surge Bot is LIVE – alerts fixed")
     await app.run_polling()
 
 if __name__ == "__main__":
