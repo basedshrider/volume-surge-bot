@@ -10,7 +10,7 @@ from handlers.callbacks import callback_handler
 from loguru import logger
 import services.alert_engine
 
-# Configure logging so we can see errors in Railway
+# Configure logging so we can see what happens in Railway
 logger.remove()
 logger.add(lambda msg: print(msg, end=""), level="DEBUG", colorize=True)
 
@@ -25,7 +25,10 @@ async def main():
 
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("menu", show_menu))
+    
+    # FIXED LINE - no backslash
     app.add_handler(MessageHandler(filters.TEXT & \~filters.COMMAND, natural_language))
+    
     app.add_handler(CallbackQueryHandler(callback_handler))
 
     start_scanner()
