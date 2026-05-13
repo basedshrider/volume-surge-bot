@@ -1,12 +1,11 @@
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
-from telegram.ext import Application
 from loguru import logger
 import html
 from utils.constants import CHAIN_MAP, VOLUME_KEYS
 
-async def send_alert(user_id: int, pair: dict, ratio: float, timeframe: str):
-    app = Application.get_current()
-    bot = app.bot
+async def send_alert(user_id: int, pair: dict, ratio: float, timeframe: str, bot=None):
+    if not bot:
+        return  # fallback safety
 
     token = pair.get("baseToken", {})
     mcap = pair.get("marketCap") or pair.get("fdv") or 0
@@ -36,4 +35,4 @@ Ratio: <b>{ratio:.1f}%</b>
     try:
         await bot.send_message(chat_id=user_id, text=text, parse_mode="HTML", reply_markup=keyboard)
     except Exception as e:
-        logger.error(f"Alert failed: {e}")
+        logger.error(f"Alert failed for {user_id}: {e}")
