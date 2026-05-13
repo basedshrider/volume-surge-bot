@@ -8,7 +8,11 @@ from handlers.start import start
 from handlers.commands import show_menu, natural_language
 from handlers.callbacks import callback_handler
 from loguru import logger
-import services.alert_engine   # ← NEW
+import services.alert_engine
+
+# Configure logging so we can see errors in Railway
+logger.remove()
+logger.add(lambda msg: print(msg, end=""), level="DEBUG", colorize=True)
 
 async def main():
     async with engine.begin() as conn:
@@ -16,8 +20,8 @@ async def main():
 
     app = Application.builder().token(config.TELEGRAM_BOT_TOKEN).build()
 
-    # Make bot available to background scanner
-    services.alert_engine.bot = app.bot   # ← NEW (this fixes alerts)
+    # Make bot available globally for alerts
+    services.alert_engine.bot = app.bot
 
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("menu", show_menu))
@@ -26,7 +30,7 @@ async def main():
 
     start_scanner()
 
-    logger.success("🤖 Volume Surge Bot is LIVE – alerts fixed")
+    logger.success("🤖 Volume Surge Bot is LIVE and stable")
     await app.run_polling()
 
 if __name__ == "__main__":
