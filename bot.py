@@ -22,7 +22,7 @@ async def main():
 
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("menu", show_menu))
-    app.add_handler(MessageHandler(filters.TEXT & \~filters.COMMAND, natural_language))
+    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, natural_language))
     app.add_handler(CallbackQueryHandler(callback_handler))
 
     # SCANNER IS DISABLED (this was causing the crash)
