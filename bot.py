@@ -10,7 +10,7 @@ from handlers.callbacks import callback_handler
 from loguru import logger
 import services.alert_engine
 
-# Better logging for Railway
+# Logging for Railway
 logger.remove()
 logger.add(lambda msg: print(msg, end=""), level="DEBUG", colorize=True)
 
@@ -20,20 +20,20 @@ async def main():
 
     app = Application.builder().token(config.TELEGRAM_BOT_TOKEN).build()
 
-    # Make bot available globally for alerts
+    # Make bot available for alerts
     services.alert_engine.bot = app.bot
 
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("menu", show_menu))
     
-    # THIS IS THE FIXED LINE (NO BACKSLASH)
+    # CORRECT LINE - no backslash
     app.add_handler(MessageHandler(filters.TEXT & \~filters.COMMAND, natural_language))
     
     app.add_handler(CallbackQueryHandler(callback_handler))
 
     start_scanner()
 
-    logger.success("🤖 Volume Surge Bot started successfully")
+    logger.success("🤖 Volume Surge Bot started successfully - no syntax error")
     await app.run_polling()
 
 if __name__ == "__main__":
