@@ -27,7 +27,7 @@ async def main():
     app.add_handler(CommandHandler("menu", show_menu))
     
     # FIXED: correct filter syntax (no backslash)
-    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, natural_language))
+    app.add_handler(MessageHandler(filters.TEXT & \~filters.COMMAND, natural_language))
     
     app.add_handler(CallbackQueryHandler(callback_handler))
 
